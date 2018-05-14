@@ -1,19 +1,24 @@
-From debian
-MAINTAINER docker@deliverous.com
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y python-pip python-dev supervisor exim4 && apt-get clean
-RUN pip install graphite-beacon
-RUN pip install supervisor-stdout
+# private
 
-# Supervisord
-ADD docker/supervisor.conf /etc/supervisor/conf.d/deliverous.conf
+FROM 192.168.1.5:5000/python3:v3.6
 
-# Conf Exim
-ADD docker/update-exim4.conf.conf /etc/exim4/update-exim4.conf.conf
-ADD docker/exim4 /etc/default/exim4
+# Add code
 
-# Add a default /config.json for backward compatibility
-RUN echo '{ "include":["/srv/alerting/etc/config.json"] }' > /config.json
+# Install application requirements
+ADD ./requirements.txt /srv/
+RUN pip3 install -r /srv/requirements.txt
 
-CMD ["/usr/bin/supervisord"]
+# Add start script
+ADD ./start.sh /srv/
 
+
+ADD ./graphite_beacon /srv/graphite_beacon
+
+# Create beacon user, will own the beacon app
+RUN adduser --no-create-home --disabled-login --group --system beacon
+RUN chown -R beacon:beacon /srv/graphite_beacon
+
+WORKDIR /srv
+
+# Execute start script
+CMD ["/bin/bash /srv/start.sh"]
