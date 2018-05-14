@@ -281,7 +281,7 @@ class GraphiteAlert(BaseAlert):
                 self.check(data)
                 self.notify('normal', 'Metrics are loaded', target='loading', ntype='common')
             except Exception as e:
-                raise e
+
                 self.notify(
                     self.loading_error, 'Loading error: %s' % e, target='loading', ntype='common')
             self.waiting = False
