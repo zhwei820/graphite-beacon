@@ -21,4 +21,4 @@ RUN chown -R beacon:beacon /srv/graphite_beacon
 WORKDIR /srv
 
 # Execute start script
-CMD ["/bin/bash /srv/start.sh"]
+CMD ["/bin/bash", "./start.sh"]
