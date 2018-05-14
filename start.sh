@@ -1,0 +1,1 @@
+python3 -m graphite_beacon.app --config=graphite_beacon/config.json
