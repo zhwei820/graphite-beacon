@@ -1,6 +1,8 @@
 class GraphiteRecord(object):
 
     def __init__(self, metric_string, default_nan_value=None, ignore_nan=False):
+        if isinstance(metric_string, bytes):
+            metric_string = metric_string.decode("utf-8")
         try:
             meta, data = metric_string.split('|')
         except ValueError:

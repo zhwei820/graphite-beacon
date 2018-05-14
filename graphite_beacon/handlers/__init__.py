@@ -44,8 +44,9 @@ class AbstractHandler(_.with_metaclass(HandlerMeta)):
 
     def get_short(self, level, alert, value, target=None, ntype=None, rule=None):  # pylint: disable=unused-argument
         tmpl = TEMPLATES[ntype]['short']
-        return tmpl.generate(
+        res = tmpl.generate(
             level=level, reactor=self.reactor, alert=alert, value=value, target=target).strip()
+        return res if not isinstance(res, bytes) else res.decode("utf-8")
 
     def init_handler(self):
         """ Init configuration here."""

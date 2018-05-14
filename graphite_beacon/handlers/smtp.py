@@ -54,7 +54,10 @@ class SMTPHandler(AbstractHandler):
 
         try:
             LOGGER.debug("Send message to: %s", ", ".join(self.options['to']))
-            smtp.sendmail(self.options['from'], self.options['to'], msg.as_string())
+            LOGGER.debug(smtp.sendmail(self.options['from'], self.options['to'], msg.as_string()))
+        except Exception as e:
+            LOGGER.exception(e)
+
         finally:
             smtp.quit()
 
@@ -64,11 +67,18 @@ class SMTPHandler(AbstractHandler):
             reactor=self.reactor, alert=alert, value=value, level=level, target=target,
             dt=dt, rule=rule, **self.options)
         msg = MIMEMultipart('alternative')
-        plain = MIMEText(str(txt_tmpl.generate(**ctx)), 'plain')
+        _msg = txt_tmpl.generate(**ctx)
+        if isinstance(_msg, bytes):
+            _msg = _msg.decode("utf-8")
+        plain = MIMEText((_msg), 'plain')
         msg.attach(plain)
         if self.options['html']:
             html_tmpl = TEMPLATES[ntype]['html']
-            html = MIMEText(str(html_tmpl.generate(**ctx)), 'html')
+            _msg = html_tmpl.generate(**ctx)
+            if isinstance(_msg, bytes):
+                _msg = _msg.decode("utf-8")
+
+            html = MIMEText(_msg, 'html')
             msg.attach(html)
         return msg
 
