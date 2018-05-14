@@ -68,7 +68,8 @@ def convert_to_format(value, frmt=None):
         if size < value:
             break
     else:
-        return value
+        size = 1
+        name = ""
 
     value /= size  # pylint: disable=undefined-loop-variable
     value = ("%.1f" % value).rstrip('0').rstrip('.')

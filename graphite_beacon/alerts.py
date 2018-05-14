@@ -214,8 +214,9 @@ class BaseAlert(_.with_metaclass(AlertFabric)):
 
     def notify(self, level, value, target=None, ntype=None, rule=None):
         """Notify main reactor about event."""
+        # send all event
         # Did we see the event before?
-        if target in self.state and level == self.state[target]:
+        if target in self.state and level == 'normal':
             return False
 
         # Do we see the event first time?
